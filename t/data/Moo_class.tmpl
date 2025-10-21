@@ -1,0 +1,16 @@
+# Text::Template immutable Moo class template with Type::Tiny constraints
+package {$namespace};
+
+use Moo;
+use Types::Common::String qw( StrLength );
+use Types::Standard       qw( Enum Undef );
+
+{
+  foreach my $property ( keys %properties ) {
+    $OUT .= "has $property => ( is => 'ro'";
+    $OUT .= ', required => 1' if grep { $_ eq $property } @required;
+    $OUT .= ', isa => ' . &isa( $properties{ $property } );
+    $OUT .=  " );\n";
+  }
+}
+1

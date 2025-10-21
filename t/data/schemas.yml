@@ -1,0 +1,40 @@
+components:
+  schemas:
+    Basic:
+      type: string
+    Nullable:
+      type: integer
+      nullable: true
+    SortOrder:
+      type: string
+      enum:
+        - asc
+        - desc
+    Environment:
+      type: string
+      nullable: true
+      enum:
+        - dev
+        - test
+        - prod
+        - null
+    Password:
+      type: string
+      minLength: 8
+    Fullname:
+      type: string
+      minLength: 1
+      maxLength: 255
+    Initials:
+      type: string
+      maxLength: 3
+    Common:
+      type: object
+      properties:
+        environment:
+          $ref: "#/components/schemas/Environment"
+        user:
+          type: string
+          maxLength: 255
+      required:
+        - user

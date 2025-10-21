@@ -1,0 +1,12 @@
+Changes
+cpanfile
+lib/OpenAPI/ModelMapper.pm
+lib/OpenAPI/ModelMapper.pod
+LICENSE
+Makefile.PL
+MANIFEST			This list of files
+README
+t/build_class.t
+t/data/Moo_class.tmpl
+t/data/schemas.yml
+t/map_to_type_tiny.t
