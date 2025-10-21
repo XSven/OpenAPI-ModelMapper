@@ -12,7 +12,7 @@ my $module;
 
 BEGIN {
   $module = 'OpenAPI::ModelMapper';
-  use_ok $module, 'build_class', 'fixup_json_ref'  or BAIL_OUT "Cannot load module '$module'!";
+  use_ok $module, 'build_class', 'fixup_json_ref' or BAIL_OUT "Cannot load module '$module'!";
 }
 
 my $template = Text::Template->new( ENCODING => 'UTF-8', SOURCE => path( qw( t data Moo_class.tmpl ) ) ),
