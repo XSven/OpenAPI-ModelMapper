@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use Test::Lib;
-use Test::More import => [ qw( BAIL_OUT require_ok use_ok ) ], tests => 4;
+use Test::More import => [ qw( BAIL_OUT isa_ok require_ok use_ok ) ], tests => 5;
 use Test::Fatal          qw( lives_ok );
 use Test::File::Contents qw( files_eq_or_diff );
 use Test::File::ShareDir ();
@@ -30,8 +30,7 @@ lives_ok { $class_file = build_class $root, 'Common', tempdir() } 'Successful bu
 files_eq_or_diff $class_file, catfile( qw( t lib Model Common.pm ) ), { encoding => 'UTF-8' },
   'Compare with expected file';
 
-require_ok $class_file
+require_ok $class_file;
 
-# If you don't trust the build it's now possible to create Model::Common
-# objects:
-# my $self = Model::Common->new( environment => 'dev', user => 'Fred' );
+# The argument of the constructor new() could be a decoded JSON request body!
+isa_ok Model::Common->new( { environment => 'dev', user => 'Fred' } ), 'Model::Common'
