@@ -4,6 +4,31 @@
 
 OpenAPI::ModelMapper - ...
 
+=head1 DESCRIPTION
+
+This module builds immutable L<Moo> based DTO classes for each item in the
+C<components/schemas> subsection of an OpenAPI specification.  Each class has
+the prefix "DTO". This prefix isn't the root prefix (C<My::App> for example)
+of an application that uses this module.
+
+In a L<Mojolicious> controller a decoded request (an input) could be passed
+directly to the constructor C<new()> of a DTO class. Example:
+
+  package My::App::Controller::User;
+  use Mojo::Base qw( Mojolicious::Controller -signatures );
+
+  sub bar ( $c ) {
+    my $data = $c->req->json;
+
+    my $user = My::App::DTO::User->new( $data );
+    ...
+  }
+
+  1
+
+Dereferencing C<$data> isn't needed because the C<Moo> object system allows
+to pass a HASH reference to the constructor (L<Moo/new>).
+
 =head1 SEE ALSO
 
 =over 2
