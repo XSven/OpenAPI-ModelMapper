@@ -25,12 +25,13 @@ my $root = do {
 };
 
 my $class_file;
-lives_ok { $class_file = build_class $root, 'Common', tempdir() } 'Successful build';
+my $schema_name = 'Common';
+lives_ok { $class_file = build_class $root, $schema_name, tempdir() } 'Successful build';
 
-files_eq_or_diff $class_file, catfile( qw( t lib DTO Common.pm ) ), { encoding => 'UTF-8' },
+files_eq_or_diff $class_file, catfile( qw( t lib DTO ), $schema_name . '.pm' ), { encoding => 'UTF-8' },
   'Compare with expected file';
 
 require_ok $class_file;
 
 # The argument of the constructor new() could be a decoded JSON request body!
-isa_ok DTO::Common->new( { environment => 'dev', user => 'Fred' } ), 'DTO::Common'
+isa_ok "DTO::$schema_name"->new( { environment => 'dev', user => 'Fred' } ), "DTO::$schema_name"
