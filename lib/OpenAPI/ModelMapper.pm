@@ -28,7 +28,7 @@ sub build_class ( $$$ ) {
   my $class_filehandle = $class_file->openw_utf8;
   # Assume that the ENCODING of the template file (the SOURCE) is UTF-8
   my $template =
-       Text::Template->new( ENCODING => 'UTF-8', SOURCE => catfile( module_dir( __PACKAGE__ ), 'Moo-class.tmpl' ) ),
+       Text::Template->new( ENCODING => 'UTF-8', SOURCE => catfile( module_dir( __PACKAGE__ ), 'Moo-DTO-class.tmpl' ) ),
     or croak "Couldn't construct template: $Text::Template::ERROR";
   $template->fill_in(
     HASH   => [ { namespace => "DTO::$name", isa => \&map_to_type_tiny }, $schema ],

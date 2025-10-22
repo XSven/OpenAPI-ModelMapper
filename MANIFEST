@@ -6,7 +6,10 @@ LICENSE
 Makefile.PL
 MANIFEST			This list of files
 README
-share/templates/Moo-class.tmpl
+share/templates/Moo-DTO-class.tmpl
 t/build_class.t
 t/data/schemas.yml
+t/lib/DTO/Common.pm
+t/lib/DTO/DeploymentStatus.pm
+t/lib/DTO/Problem.pm
 t/map_to_type_tiny.t
