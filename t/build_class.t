@@ -31,3 +31,7 @@ files_eq_or_diff $class_file, catfile( qw( t lib Model Common.pm ) ), { encoding
   'Compare with expected file';
 
 require_ok $class_file
+
+# If you don't trust the build it's now possible to create Model::Common
+# objects:
+# my $self = Model::Common->new( environment => 'dev', user => 'Fred' );
