@@ -21,14 +21,15 @@ sub build_class ( $$$ ) {
   # $name doesn't refer to a package name it is a lookup key
   my ( $root, $name, $tempdir ) = @_;
 
+  my $schema = $root->{ components }->{ schemas }->{ $name };
+  croak "No schema with name '$name' found in 'components/schemas' subsection"
+    unless defined $schema;
+  my $class_file       = path( $tempdir, 'DTO' )->mkdir->child( "$name.pm" );
+  my $class_filehandle = $class_file->openw_utf8;
   # Assume that the ENCODING of the template file (the SOURCE) is UTF-8
   my $template =
        Text::Template->new( ENCODING => 'UTF-8', SOURCE => catfile( module_dir( __PACKAGE__ ), 'Moo-class.tmpl' ) ),
     or croak "Couldn't construct template: $Text::Template::ERROR";
-
-  my $schema           = $root->{ components }->{ schemas }->{ $name };
-  my $class_file       = path( $tempdir, 'DTO' )->mkdir->child( "$name.pm" );
-  my $class_filehandle = $class_file->openw_utf8;
   $template->fill_in(
     HASH   => [ { namespace => "DTO::$name", isa => \&map_to_type_tiny }, $schema ],
     OUTPUT => $class_filehandle
