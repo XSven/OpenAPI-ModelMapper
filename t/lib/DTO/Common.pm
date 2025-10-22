@@ -1,6 +1,9 @@
 package DTO::Common;
 
 use Moo;
+use MooX::StrictConstructor;
+use MooX::TypeTiny;
+
 use Types::Common::String qw( StrLength );
 use Types::Standard       qw( Enum Str Undef );
 
