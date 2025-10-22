@@ -27,10 +27,10 @@ sub build_class ( $$$ ) {
     or croak "Couldn't construct template: $Text::Template::ERROR";
 
   my $schema           = $root->{ components }->{ schemas }->{ $name };
-  my $class_file       = path( $tempdir, 'Model' )->mkdir->child( "$name.pm" );
+  my $class_file       = path( $tempdir, 'DTO' )->mkdir->child( "$name.pm" );
   my $class_filehandle = $class_file->openw_utf8;
   $template->fill_in(
-    HASH   => [ { namespace => "Model::$name", isa => \&map_to_type_tiny }, $schema ],
+    HASH   => [ { namespace => "DTO::$name", isa => \&map_to_type_tiny }, $schema ],
     OUTPUT => $class_filehandle
   ) or croak "Couldn't fill in template: $Text::Template::ERROR";
 

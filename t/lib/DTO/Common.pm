@@ -1,4 +1,4 @@
-package Model::Common;
+package DTO::Common;
 
 use Moo;
 use Types::Common::String qw( StrLength );
