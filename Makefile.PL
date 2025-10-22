@@ -2,7 +2,8 @@ use strict;
 use warnings;
 
 use ExtUtils::MakeMaker::CPANfile;    # do not supply an empty list because import() has to be called
-use File::Spec::Functions qw( catfile );
+use File::ShareDir::Install qw( install_share );
+use File::Spec::Functions   qw( catfile );
 
 my @main_module_namespace = qw( OpenAPI ModelMapper );
 my $release_status        = 'testing';                   # transition: unstable => testing => stable
@@ -61,6 +62,7 @@ my %att = (
   test      => { RECURSIVE_TEST_FILES => 1 }
 );
 
+install_share module => $main_module => 'share';
 # Makefile.PL as a modulino
 # https://www.masteringperl.org/2015/01/makefile-pl-as-a-modulino/
 if ( caller() ) {

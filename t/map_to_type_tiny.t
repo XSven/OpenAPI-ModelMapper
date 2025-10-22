@@ -3,8 +3,8 @@ use warnings;
 
 use Test::More import => [ qw( BAIL_OUT explain is note use_ok ) ], tests => 8;
 
-use Path::Tiny qw( path );
-use YAML::XS   qw( LoadFile );
+use File::Spec::Functions qw( catfile );
+use YAML::XS              qw( LoadFile );
 
 my $module;
 
@@ -14,8 +14,8 @@ BEGIN {
 }
 
 my $schemas = do {
-  local $YAML::XS::Boolean = 'JSON::PP';
-  LoadFile( path( qw( t data schemas.yml ) ) )->{ components }->{ schemas }
+  local $YAML::XS::Boolean = 'JSON::PP'; ## no critic ( ProhibitPackageVars )
+  LoadFile( catfile( qw( t data schemas.yml ) ) )->{ components }->{ schemas }
 };
 #note explain $schemas;
 

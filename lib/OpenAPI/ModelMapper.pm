@@ -7,11 +7,13 @@ $OpenAPI::ModelMapper::VERSION = 'v1.0.0';
 
 use subs qw( build_class fixup_json_ref map_to_type_tiny );
 
-use Carp           qw( croak );
-use Exporter       qw( import );
-use JSON::Pointer  ();
-use Path::Tiny     qw( path );
-use Text::Template ();
+use Carp                  qw( croak );
+use Exporter              qw( import );
+use File::Spec::Functions qw( catfile );
+use File::ShareDir        qw( module_dir );
+use JSON::Pointer         ();
+use Path::Tiny            qw( path );         # FIXME: try to get rid of Path::Tiny
+use Text::Template        ();
 
 our @EXPORT_OK = qw( build_class fixup_json_ref map_to_type_tiny );
 
@@ -20,7 +22,8 @@ sub build_class ( $$$ ) {
   my ( $root, $name, $tempdir ) = @_;
 
   # Assume that the ENCODING of the template file (the SOURCE) is UTF-8
-  my $template = Text::Template->new( ENCODING => 'UTF-8', SOURCE => path( qw( t data Moo_class.tmpl ) ) ),
+  my $template =
+       Text::Template->new( ENCODING => 'UTF-8', SOURCE => catfile( module_dir( __PACKAGE__ ), 'Moo-class.tmpl' ) ),
     or croak "Couldn't construct template: $Text::Template::ERROR";
 
   my $schema           = $root->{ components }->{ schemas }->{ $name };
