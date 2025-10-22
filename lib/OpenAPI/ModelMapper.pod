@@ -29,6 +29,19 @@ directly to the constructor C<new()> of a DTO class. Example:
 Dereferencing C<$data> isn't needed because the C<Moo> object system allows
 to pass a HASH reference to the constructor (L<Moo/new>).
 
+"Problem" response (an output) DTO C<TO_JSON()> implementation
+
+  # TO_JSON needs "predicate => 1" for all properties
+  sub TO_JSON {
+    my ( $self ) = @_;
+    my $json = {};
+    foreach ( qw( detail status title ) ) {
+      my $has = 'has_' . $_;
+      $json->{ $_ } = $self->$_ if $self->$has
+    }
+    $json
+  }
+
 =head1 SEE ALSO
 
 =over 2
