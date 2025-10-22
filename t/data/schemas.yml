@@ -1,5 +1,24 @@
 components:
   schemas:
+    Common:
+      type: object
+      properties:
+        environment:
+          $ref: "#/components/schemas/Environment"
+        user:
+          type: string
+          maxLength: 255
+      required:
+        - user
+    DeploymentStatus:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/DeploymentStatusConstant"
+        message:
+          type: string
+      required:
+        - status
     Basic:
       type: string
     Nullable:
@@ -18,6 +37,14 @@ components:
         - test
         - prod
         - null
+    DeploymentStatusConstant:
+      type: string
+      enum:
+        - triggered
+        - pending
+        - succeeded
+        - service_failed
+        - failed
     Password:
       type: string
       minLength: 8
@@ -28,13 +55,3 @@ components:
     Initials:
       type: string
       maxLength: 3
-    Common:
-      type: object
-      properties:
-        environment:
-          $ref: "#/components/schemas/Environment"
-        user:
-          type: string
-          maxLength: 255
-      required:
-        - user
