@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use Test::Lib;
-use Test::More import => [ qw( BAIL_OUT isa_ok require_ok use_ok ) ], tests => 8;
+use Test::More import => [ qw( BAIL_OUT isa_ok require_ok use_ok ) ], tests => 11;
 use Test::Fatal          qw( dies_ok lives_ok );
 use Test::File::Contents qw( files_eq_or_diff );
 use Test::File::ShareDir ();
@@ -24,11 +24,10 @@ my $root = do {
   fixup_json_ref( LoadFile( catfile( qw( t data schemas.yml ) ) ) )
 };
 
-my $schema_name = 'Unknown';
-dies_ok { build_class $root, $schema_name, '' } 'Unknown schema name';
+dies_ok { build_class $root, 'Unknown', '' } 'Unknown schema name';
 
-my $class_file;
-for $schema_name ( qw ( Common DeploymentStatus ) ) {
+for my $schema_name ( qw ( Common DeploymentStatus Problem ) ) {
+  my $class_file;
   lives_ok { $class_file = build_class $root, $schema_name, tempdir() }
     "Class file for '$schema_name' schema successfully build";
 

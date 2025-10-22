@@ -31,5 +31,6 @@ on test => sub {
   requires 'MooX::StrictConstructor' => '0';
   requires 'MooX::TypeTiny'          => '0';
   requires 'Type::Tiny'              => '0';
-  requires 'YAML::XS'                => '0.67'
+  requires 'YAML::XS'                => '0.67';
+  requires 'namespace::clean'        => '0'
 }

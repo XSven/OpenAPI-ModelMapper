@@ -69,6 +69,14 @@ sub build_class ( $$$ ) {
             $target_type .= ", $max_length" if defined $max_length;
             $target_type .= ' ]'
           }
+        } elsif ( $type eq 'integer' ) {
+          my $minimum = $data->{ minimum };
+          my $maximum = $data->{ maximum };
+          if ( defined $minimum or defined $maximum ) {
+            $target_type = 'IntRange[ ' . ( defined $minimum ? $minimum : '0' );
+            $target_type .= ", $maximum" if defined $maximum;
+            $target_type .= ' ]'
+          }
         }
         # TODO: Modify target type if type-specific keywords are present
         if ( my $enum_values = $data->{ enum } ) {

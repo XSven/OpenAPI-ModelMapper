@@ -19,8 +19,26 @@ components:
           type: string
       required:
         - status
-    Basic:
+    Problem:
+      type: object
+      properties:
+        detail:
+          type: string
+          maxLength: 1024
+        status:
+          type: integer
+          format: int32
+          minimum: 100
+          maximum: 599
+        title:
+          type: string
+          maxLength: 128
+      required:
+        - title
+    BasicString:
       type: string
+    BasicInteger:
+      type: integer
     Nullable:
       type: integer
       nullable: true
