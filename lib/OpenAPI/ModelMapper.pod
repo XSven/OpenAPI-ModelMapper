@@ -4,13 +4,22 @@
 
 OpenAPI::ModelMapper - ...
 
+=head1 SYNOPSIS
+
+  use OpenAPI::ModelMapper ();
+
+  my $self = OpenAPI::ModelMapper->load_spec_file( 'OpenAPI.yml' );
+
+  my $class_file = $self->generate_class( 'DeploymentStatus' );
+
 =head1 DESCRIPTION
 
-This class generates DTO classes for each item in the C<components/schemas>
-subsection of an OpenAPI specification. Each class is generated for a given
-object system. Currently L<Moo> is only supported. Each class has the prefix
-"DTO". This prefix isn't the root prefix (C<My::App> for example) of an
-application that has used this class to get initialized.
+This class is able to generate DTO classes for items in the
+C<components/schemas> subsection of an OpenAPI specification. Each class
+gets generated according to a given Perl object system. The current default
+is L<Moo> and other object systems are not supported yet. Each class has a
+prefix C<My::App::DTO>. The trailing C<DTO> part is hard-coded. The leading
+C<My::App> part is configurable.
 
 In a L<Mojolicious> controller a decoded request (an input) could be passed
 directly to the constructor C<new()> of a DTO class. Example:

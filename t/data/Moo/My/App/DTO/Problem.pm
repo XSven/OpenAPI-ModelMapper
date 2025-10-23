@@ -1,4 +1,4 @@
-package DTO::DeploymentStatus;
+package My::App::DTO::Problem;
 
 use Moo;
 use MooX::StrictConstructor;
@@ -10,7 +10,8 @@ use Types::Standard        qw( Enum Int Str Undef );
 
 use namespace::clean -except => [ qw( new ) ];
 
-has message => ( is => 'ro', isa => Str );
-has status => ( is => 'ro', required => 1, isa => Enum[ qw( triggered pending succeeded service_failed failed ) ] );
+has detail => ( is => 'ro', isa => StrLength[ 0, 1024 ] );
+has status => ( is => 'ro', isa => IntRange[ 100, 599 ] );
+has title => ( is => 'ro', required => 1, isa => StrLength[ 0, 128 ] );
 
 1

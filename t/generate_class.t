@@ -22,12 +22,13 @@ my $object_system = 'Moo';
 
 dies_ok { $self->generate_class( 'Unknown', $object_system, '' ) } 'Unknown schema name';
 
-for my $schema_name ( qw ( Common DeploymentStatus Problem ) ) {
+for my $name ( qw ( Common DeploymentStatus Problem ) ) {
   my $class_file;
-  lives_ok { $class_file = $self->generate_class( $schema_name, $object_system, tempdir() ) }
-  "Class file for '$schema_name' schema successfully generated";
+  lives_ok { $class_file = $self->generate_class( $name, tempdir() ) }
+  "Class file for '$name' schema successfully generated";
 
-  files_eq_or_diff $class_file, catfile( qw( t data ), $object_system, 'DTO', $schema_name . '.pm' ),
+  files_eq_or_diff $class_file,
+    catfile( qw( t data ), $self->object_system, split( '::', $self->prefix ), 'DTO', $name . '.pm' ),
     { encoding => 'UTF-8' },
     'Compare with expected class file';
 

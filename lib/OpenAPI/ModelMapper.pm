@@ -23,7 +23,19 @@ sub load_spec_file {
     _fixup_json_ref( LoadFile( $spec_file ) )
   };
 
-  bless { spec_file => $spec_file, spec => $spec }, $class
+  bless { spec_file => $spec_file, spec => $spec, object_system => 'Moo', prefix => 'My::App' }, $class
+}
+
+sub object_system {
+  my ( $self ) = @_;
+
+  $self->{ object_system }
+}
+
+sub prefix {
+  my ( $self ) = @_;
+
+  $self->{ prefix }
 }
 
 sub spec {
@@ -34,22 +46,23 @@ sub spec {
 
 sub generate_class {
   # $name doesn't refer to a package name it is a lookup key
-  my ( $self, $name, $object_system, $tempdir ) = @_;
+  my ( $self, $name, $tempdir ) = @_;
 
   my $schema = $self->spec->{ components }->{ schemas }->{ $name };
   croak "No schema with name '$name' found in 'components/schemas' subsection"
     unless defined $schema;
-  my $class_file = path( $tempdir, 'DTO' )->mkdir->child( "$name.pm" );
-  # On purpose overwrite existing class file
-  my $class_filehandle = $class_file->openw_utf8;
+
   # Assume that the ENCODING of the template file (the SOURCE) is UTF-8
   my $template = Text::Template->new(
     ENCODING => 'UTF-8',
-    SOURCE   => catfile( module_dir( __PACKAGE__ ), "$object_system\-DTO-class.tmpl" )
-    ),
-    or croak "Couldn't construct template: $Text::Template::ERROR";
+    SOURCE   => catfile( module_dir( __PACKAGE__ ), $self->object_system . '-DTO-class.tmpl' )
+  ) or croak "Couldn't construct template: $Text::Template::ERROR";
+
+  my $class_file = path( $tempdir, split( '::', $self->prefix ), 'DTO' )->mkdir->child( "$name.pm" );
+  # On purpose overwrite existing class file
+  my $class_filehandle = $class_file->openw_utf8;
   $template->fill_in(
-    HASH   => [ { namespace => "DTO::$name", isa => \&_map_to_type_tiny }, $schema ],
+    HASH   => [ { namespace => $self->prefix . "::DTO::$name", isa => \&_map_to_type_tiny }, $schema ],
     OUTPUT => $class_filehandle
   ) or croak "Couldn't fill in template: $Text::Template::ERROR";
 

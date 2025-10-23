@@ -1,4 +1,4 @@
-package DTO::Common;
+package My::App::DTO::Common;
 
 use Moo;
 use MooX::StrictConstructor;
