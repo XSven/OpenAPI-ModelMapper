@@ -5,23 +5,38 @@ package OpenAPI::ModelMapper;
 
 $OpenAPI::ModelMapper::VERSION = 'v1.0.0';
 
-use subs qw( generate_class fixup_json_ref map_to_type_tiny );
+use subs qw( _fixup_json_ref );
 
 use Carp                  qw( croak );
-use Exporter              qw( import );
 use File::Spec::Functions qw( catfile );
 use File::ShareDir        qw( module_dir );
 use JSON::Pointer         ();
+use YAML::XS              qw( LoadFile );
 use Path::Tiny            qw( path );         # FIXME: try to get rid of Path::Tiny
 use Text::Template        ();
 
-our @EXPORT_OK = qw( generate_class fixup_json_ref map_to_type_tiny );
+sub load_spec_file {
+  my ( $class, $spec_file ) = @_;
 
-sub generate_class ( $$$$ ) {
+  my $spec = do {
+    local $YAML::XS::Boolean = 'JSON::PP'; ## no critic ( ProhibitPackageVars )
+    _fixup_json_ref( LoadFile( catfile( qw( t data schemas.yml ) ) ) )
+  };
+
+  bless { spec => $spec }, $class;
+}
+
+sub spec {
+  my ( $self ) = @_;
+
+  $self->{ spec }
+}
+
+sub generate_class {
   # $name doesn't refer to a package name it is a lookup key
-  my ( $root, $name, $object_system, $tempdir ) = @_;
+  my ( $self, $name, $object_system, $tempdir ) = @_;
 
-  my $schema = $root->{ components }->{ schemas }->{ $name };
+  my $schema = $self->spec->{ components }->{ schemas }->{ $name };
   croak "No schema with name '$name' found in 'components/schemas' subsection"
     unless defined $schema;
   my $class_file = path( $tempdir, 'DTO' )->mkdir->child( "$name.pm" );
@@ -51,7 +66,7 @@ sub generate_class ( $$$$ ) {
     #object  => 'HashRef',
   };
 
-  sub map_to_type_tiny ( $ ) {
+  sub map_to_type_tiny {
     my ( $data ) = @_;
 
     # FIXME: "allOf" not implemented yet
@@ -95,13 +110,13 @@ sub generate_class ( $$$$ ) {
   }
 }
 
-sub fixup_json_ref ( $;$ ) {
+sub _fixup_json_ref ( $;$ ) {
   my ( $root, $curr ) = @_;
 
   $curr = $root unless @_ == 2;
   if ( ref $curr eq 'ARRAY' ) {
     for my $c ( @$curr ) {
-      $c = fixup_json_ref( $root, $c )
+      $c = _fixup_json_ref( $root, $c )
     }
   } elsif ( ref $curr eq 'HASH' ) {
     for my $k ( sort keys %$curr ) {
@@ -121,7 +136,7 @@ sub fixup_json_ref ( $;$ ) {
         $curr->{ __name } = $name;
 
       } else {
-        $curr->{ $k } = fixup_json_ref( $root, $curr->{ $k } )
+        $curr->{ $k } = _fixup_json_ref( $root, $curr->{ $k } )
       }
     }
   } else {
