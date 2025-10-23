@@ -1,3 +1,5 @@
+# Prefer numeric version for backwards compatibility
+BEGIN { require 5.010_001 }; ## no critic ( RequireUseStrict, RequireUseWarnings )
 use strict;
 use warnings;
 
