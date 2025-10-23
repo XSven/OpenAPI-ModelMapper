@@ -24,7 +24,7 @@ sub build_class ( $$$ ) {
   my $schema = $root->{ components }->{ schemas }->{ $name };
   croak "No schema with name '$name' found in 'components/schemas' subsection"
     unless defined $schema;
-  my $class_file       = path( $tempdir, 'DTO' )->mkdir->child( "$name.pm" );
+  my $class_file = path( $tempdir, 'DTO' )->mkdir->child( "$name.pm" );
   # On purpose overwrite existing class file
   my $class_filehandle = $class_file->openw_utf8;
   # Assume that the ENCODING of the template file (the SOURCE) is UTF-8

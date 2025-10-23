@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::Lib;
+#use Test::Lib;
 use Test::More import => [ qw( BAIL_OUT isa_ok require_ok use_ok ) ], tests => 11;
 use Test::Fatal          qw( dies_ok lives_ok );
 use Test::File::Contents qw( files_eq_or_diff );
@@ -31,7 +31,7 @@ for my $schema_name ( qw ( Common DeploymentStatus Problem ) ) {
   lives_ok { $class_file = build_class $root, $schema_name, tempdir() }
     "Class file for '$schema_name' schema successfully build";
 
-  files_eq_or_diff $class_file, catfile( qw( t lib DTO ), $schema_name . '.pm' ), { encoding => 'UTF-8' },
+  files_eq_or_diff $class_file, catfile( qw( t data Moo DTO ), $schema_name . '.pm' ), { encoding => 'UTF-8' },
     'Compare with expected class file';
 
   require_ok $class_file

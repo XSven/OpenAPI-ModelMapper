@@ -24,7 +24,6 @@ on test => sub {
   requires 'Test::Fatal'             => '0';
   requires 'Test::File::Contents'    => '0';
   requires 'Test::File::ShareDir'    => '0';
-  requires 'Test::Lib'               => '0';
   requires 'Test::More'              => '1.001005';    # Subtests accept args
   requires 'Test::TempDir::Tiny'     => '0';
   requires 'Moo'                     => '0';
