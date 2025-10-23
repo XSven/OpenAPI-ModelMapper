@@ -5,7 +5,7 @@ package OpenAPI::ModelMapper;
 
 $OpenAPI::ModelMapper::VERSION = 'v1.0.0';
 
-use subs qw( build_class fixup_json_ref map_to_type_tiny );
+use subs qw( generate_class fixup_json_ref map_to_type_tiny );
 
 use Carp                  qw( croak );
 use Exporter              qw( import );
@@ -15,11 +15,11 @@ use JSON::Pointer         ();
 use Path::Tiny            qw( path );         # FIXME: try to get rid of Path::Tiny
 use Text::Template        ();
 
-our @EXPORT_OK = qw( build_class fixup_json_ref map_to_type_tiny );
+our @EXPORT_OK = qw( generate_class fixup_json_ref map_to_type_tiny );
 
-sub build_class ( $$$ ) {
+sub generate_class ( $$$$ ) {
   # $name doesn't refer to a package name it is a lookup key
-  my ( $root, $name, $tempdir ) = @_;
+  my ( $root, $name, $object_system, $tempdir ) = @_;
 
   my $schema = $root->{ components }->{ schemas }->{ $name };
   croak "No schema with name '$name' found in 'components/schemas' subsection"
@@ -28,8 +28,10 @@ sub build_class ( $$$ ) {
   # On purpose overwrite existing class file
   my $class_filehandle = $class_file->openw_utf8;
   # Assume that the ENCODING of the template file (the SOURCE) is UTF-8
-  my $template =
-       Text::Template->new( ENCODING => 'UTF-8', SOURCE => catfile( module_dir( __PACKAGE__ ), 'Moo-DTO-class.tmpl' ) ),
+  my $template = Text::Template->new(
+    ENCODING => 'UTF-8',
+    SOURCE   => catfile( module_dir( __PACKAGE__ ), "$object_system\-DTO-class.tmpl" )
+    ),
     or croak "Couldn't construct template: $Text::Template::ERROR";
   $template->fill_in(
     HASH   => [ { namespace => "DTO::$name", isa => \&map_to_type_tiny }, $schema ],

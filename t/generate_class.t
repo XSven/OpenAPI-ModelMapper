@@ -16,7 +16,7 @@ my $module;
 BEGIN {
   $module = 'OpenAPI::ModelMapper';
   Test::File::ShareDir->import( -share => { -module => { $module => catdir( qw(  share templates ) ) } } );
-  use_ok $module, 'build_class', 'fixup_json_ref' or BAIL_OUT "Cannot load module '$module'!"
+  use_ok $module, 'generate_class', 'fixup_json_ref' or BAIL_OUT "Cannot load module '$module'!"
 }
 
 my $root = do {
@@ -24,14 +24,17 @@ my $root = do {
   fixup_json_ref( LoadFile( catfile( qw( t data schemas.yml ) ) ) )
 };
 
-dies_ok { build_class $root, 'Unknown', '' } 'Unknown schema name';
+my $object_system = 'Moo';
+
+dies_ok { generate_class $root, 'Unknown', $object_system, '' } 'Unknown schema name';
 
 for my $schema_name ( qw ( Common DeploymentStatus Problem ) ) {
   my $class_file;
-  lives_ok { $class_file = build_class $root, $schema_name, tempdir() }
-    "Class file for '$schema_name' schema successfully build";
+  lives_ok { $class_file = generate_class $root, $schema_name, $object_system, tempdir() }
+    "Class file for '$schema_name' schema successfully generated";
 
-  files_eq_or_diff $class_file, catfile( qw( t data Moo DTO ), $schema_name . '.pm' ), { encoding => 'UTF-8' },
+  files_eq_or_diff $class_file, catfile( qw( t data ), $object_system, 'DTO', $schema_name . '.pm' ),
+    { encoding => 'UTF-8' },
     'Compare with expected class file';
 
   require_ok $class_file
