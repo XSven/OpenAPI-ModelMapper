@@ -5,7 +5,7 @@ package OpenAPI::ModelMapper;
 
 $OpenAPI::ModelMapper::VERSION = 'v1.0.0';
 
-use subs qw( _fixup_json_ref );
+use subs qw( _fixup_json_ref _map_to_type_tiny );
 
 use Carp                  qw( croak );
 use File::Spec::Functions qw( catfile );
@@ -20,10 +20,10 @@ sub load_spec_file {
 
   my $spec = do {
     local $YAML::XS::Boolean = 'JSON::PP'; ## no critic ( ProhibitPackageVars )
-    _fixup_json_ref( LoadFile( catfile( qw( t data schemas.yml ) ) ) )
+    _fixup_json_ref( LoadFile( $spec_file ) )
   };
 
-  bless { spec => $spec }, $class;
+  bless { spec_file => $spec_file, spec => $spec }, $class
 }
 
 sub spec {
@@ -49,7 +49,7 @@ sub generate_class {
     ),
     or croak "Couldn't construct template: $Text::Template::ERROR";
   $template->fill_in(
-    HASH   => [ { namespace => "DTO::$name", isa => \&map_to_type_tiny }, $schema ],
+    HASH   => [ { namespace => "DTO::$name", isa => \&_map_to_type_tiny }, $schema ],
     OUTPUT => $class_filehandle
   ) or croak "Couldn't fill in template: $Text::Template::ERROR";
 
@@ -66,17 +66,17 @@ sub generate_class {
     #object  => 'HashRef',
   };
 
-  sub map_to_type_tiny {
+  sub _map_to_type_tiny ( $ ) {
     my ( $data ) = @_;
 
     # FIXME: "allOf" not implemented yet
     if ( exists $data->{ anyOf } ) {
       # FIXME: Not properly impelemted. We need a kind of union here
       # ... so we have a multi-type. Hope that it is just a type or null
-      return map_to_type_tiny( $data->{ anyOf }->[ 0 ] );
+      return _map_to_type_tiny( $data->{ anyOf }->[ 0 ] );
     } elsif ( my $type = $data->{ type } ) {    # Access "type" keyword
       if ( $type eq 'array' ) {
-        my $subtype = map_to_type_tiny( $data->{ items } );
+        my $subtype = _map_to_type_tiny( $data->{ items } );
         return "ArrayRef[ $subtype ]"
       } elsif ( defined( my $target_type = $basic_types_map->{ $type } ) ) {
         if ( $type eq 'string' ) {
