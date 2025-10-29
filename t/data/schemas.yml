@@ -36,10 +36,10 @@ components:
       required:
         - title
     AnyValue:
-      description: Any value is allowed, except null
-    AnyValueEvenNull:
       nullable: true
       description: Any value is allowed, including null
+    AnyValueExceptNull:
+      description: Any value is allowed, except null
     BasicString:
       type: string
     BasicInteger:
