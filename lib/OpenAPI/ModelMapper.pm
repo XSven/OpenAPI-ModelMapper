@@ -121,6 +121,8 @@ sub generate_class {
       } else {
         croak "Unknown type '$type'"
       }
+    } else {
+      return ( $data->{ nullable } ? 'Any' : 'Defined' )
     }
   }
 }

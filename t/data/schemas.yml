@@ -14,7 +14,7 @@ components:
       type: object
       properties:
         status:
-          $ref: "#/components/schemas/DeploymentStatusConstant"
+          $ref: "#/components/schemas/DeploymentStatusEnum"
         message:
           type: string
       required:
@@ -35,6 +35,11 @@ components:
           maxLength: 128
       required:
         - title
+    AnyValue:
+      description: Any value is allowed, except null
+    AnyValueEvenNull:
+      nullable: true
+      description: Any value is allowed, including null
     BasicString:
       type: string
     BasicInteger:
@@ -55,7 +60,7 @@ components:
         - test
         - prod
         - null
-    DeploymentStatusConstant:
+    DeploymentStatusEnum:
       type: string
       enum:
         - triggered
