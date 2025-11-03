@@ -11,7 +11,7 @@ on configure => sub {
 };
 
 on runtime => sub {
-  requires 'Carp'           => '0';
+  requires 'Carp'           => '1.32';                   # Don't vivify @CARP_NOT and @ISA in caller's namespace
   requires 'Exporter'       => '0';
   requires 'JSON::Pointer'  => '0';
   requires 'Path::Tiny'     => '0';
