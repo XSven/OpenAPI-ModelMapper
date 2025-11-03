@@ -15,14 +15,14 @@ OpenAPI::ModelMapper - ...
 =head1 DESCRIPTION
 
 This class is able to generate DTO classes for items in the
-C<components/schemas> subsection of an OpenAPI specification. Each class
-gets generated according to a given Perl object system. The current default
-is L<Moo> and other object systems are not supported yet. Each class has a
+C<components/schemas> subsection of an OpenAPI specification. Each class gets
+generated according to a given Perl object system. The default object system
+is L<Moo>. Other object systems are not supported yet. Each DTO class has a
 prefix C<My::App::DTO>. The trailing C<DTO> part is hard-coded. The leading
 C<My::App> part is configurable.
 
-In a L<Mojolicious> controller a decoded request (an input) could be passed
-directly to the constructor C<new()> of a DTO class. Example:
+In the following L<Mojolicious> controller example a decoded request/input
+C<$data> is directly passed to the constructor C<new()> of a DTO class.
 
   package My::App::Controller::User;
   use Mojo::Base qw( Mojolicious::Controller -signatures );
@@ -36,10 +36,11 @@ directly to the constructor C<new()> of a DTO class. Example:
 
   1
 
-Dereferencing C<$data> isn't needed if the chosen object system allows to
-pass a HASH reference to the constructor. L<Moo/new> for example allows this.
+This approach works if C<$data> is a HASH reference and if the selected
+object system allows to pass a HASH reference to the constructor. L<Moo/new>
+for example allows this.
 
-"Problem" response (an output) DTO C<TO_JSON()> implementation
+"Problem" response/output DTO C<TO_JSON()> implementation
 
   # TO_JSON needs "predicate => 1" for all properties
   sub TO_JSON {
