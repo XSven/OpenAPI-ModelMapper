@@ -53,6 +53,9 @@ sub generate_class {
   my $schema = $self->spec->{ components }->{ schemas }->{ $name };
   croak "No schema with name '$name' found in 'components/schemas' subsection"
     unless defined $schema;
+  my $type = $schema->{ type };
+  croak "Type of '$name' schema is not an object"
+    unless defined $type and $type eq 'object';
 
   # Assume that the ENCODING of the template file (the SOURCE) is UTF-8
   my $template = Text::Template->new(
@@ -63,12 +66,14 @@ sub generate_class {
   my $class_file = path( $tempdir, split( '::', $self->prefix ), 'DTO' )->mkdir->child( "$name.pm" );
   # On purpose overwrite existing class file
   my $class_filehandle = $class_file->openw_utf8;
+  # $schema is a HASH reference
+  # The most important key is "properties"
   $template->fill_in(
     HASH   => [ { namespace => $self->prefix . "::DTO::$name", isa => \&_map_to_type_tiny }, $schema ],
     OUTPUT => $class_filehandle
   ) or croak "Couldn't fill in template: $Text::Template::ERROR";
 
-  # success
+  # Success
   $class_file->stringify
 }
 

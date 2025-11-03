@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More import => [ qw( BAIL_OUT isa_ok note ok require_ok ) ], tests => 14;
+use Test::More import => [ qw( BAIL_OUT isa_ok note ok require_ok ) ], tests => 16;
 use Test::Fatal          qw( dies_ok lives_ok );
 use Test::File::Contents qw( files_eq_or_diff );
 use Test::File::ShareDir ();
@@ -17,10 +17,11 @@ BEGIN {
   require_ok $class or BAIL_OUT "Cannot load class '$class'!"
 }
 
-my $self          = $class->load_spec_file( catfile( qw( t data schemas.yml ) ) );
-my $object_system = 'Moo';
+my $self = $class->load_spec_file( catfile( qw( t data schemas.yml ) ) );
 
-dies_ok { $self->generate_class( 'Unknown', $object_system, '' ) } 'Unknown schema name';
+dies_ok { $self->generate_class( 'Unknown' ) } 'Unknown schema name';
+dies_ok { $self->generate_class( 'AnyValue' ) } 'Missing schema type';
+dies_ok { $self->generate_class( 'BasicString' ) } 'Invalid schema type';
 
 for my $name ( qw ( Common DeploymentStatus Problem ) ) {
   my $class_file;
@@ -36,5 +37,5 @@ for my $name ( qw ( Common DeploymentStatus Problem ) ) {
   require_ok $class_file;
 
   my $class = join( '::', $self->prefix, 'DTO', $name );
-  ok not( defined $class->can( 'TO_JSON' ) ), "'$class' has no TO_JSON() object method"
+  ok not( defined $class->can( 'TO_JSON' ) ), "'$class' has no TO_JSON() object method" ## no critic ( RequireTestLabels )
 }
