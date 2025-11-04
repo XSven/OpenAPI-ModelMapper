@@ -48,6 +48,10 @@ The second controller action renders a user DTO to a JSON encoded
 response/output. L<Mojo::JSON> is able to do the rendering if the DTO class
 has a C<TO_JSON()> object method implementation.
 
+If L<MooX::StrictConstructor> is not used, C<new()> swallows unknown attributes
+(additional properties). If it is the purpose of additional properties to
+get ignored, this behaviour is sufficient.
+
 =head1 SEE ALSO
 
 =over 2
