@@ -56,6 +56,8 @@ sub generate_class {
   my $type = $schema->{ type };
   croak "Type of '$name' schema is not an object"
     unless defined $type and $type eq 'object';
+  $schema->{ additionalProperties } = $JSON::PP::true ## no critic ( ProhibitPackageVars )
+    unless exists $schema->{ additionalProperties };
 
   # Assume that the ENCODING of the template file (the SOURCE) is UTF-8
   my $template = Text::Template->new(
