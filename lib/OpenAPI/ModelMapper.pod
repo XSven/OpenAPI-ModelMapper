@@ -21,37 +21,32 @@ is L<Moo>. Other object systems are not supported yet. Each DTO class has a
 prefix C<My::App::DTO>. The trailing C<DTO> part is hard-coded. The leading
 C<My::App> part is configurable.
 
-In the following L<Mojolicious> controller example a decoded request/input
-C<$data> is directly passed to the constructor C<new()> of a DTO class.
-
   package My::App::Controller::User;
   use Mojo::Base qw( Mojolicious::Controller -signatures );
 
-  sub bar ( $c ) {
+  sub create ( $c ) {
     my $data = $c->req->json;
-
     my $user = My::App::DTO::User->new( $data );
     ...
   }
 
+  sub read ( $c ) {
+    ...
+    my $user = My::App::DTO::User->new( first_name => 'Fred', second_name => 'Flintstone' );
+    $c->render( json => $user );
+  }
+
   1
 
-This approach works if C<$data> is a HASH reference and if the selected
-object system allows to pass a HASH reference to the constructor. L<Moo/new>
-for example allows this.
+The first action in the previous L<Mojolicious> controller example passes
+a decoded request/input C<$data> directly to the constructor C<new()>
+of a user DTO class.  This approach works if C<$data> is a HASH reference
+and if the selected object system allows to pass a HASH reference to the
+constructor. L<Moo/new> for example allows this.
 
-"Problem" response/output DTO C<TO_JSON()> implementation
-
-  # TO_JSON needs "predicate => 1" for all properties
-  sub TO_JSON {
-    my ( $self ) = @_;
-    my $json = {};
-    foreach ( qw( detail status title ) ) {
-      my $has = 'has_' . $_;
-      $json->{ $_ } = $self->$_ if $self->$has
-    }
-    $json
-  }
+The second controller action renders a user DTO to a JSON encoded
+response/output. L<Mojo::JSON> is able to do the rendering if the DTO class
+has a C<TO_JSON()> object method implementation.
 
 =head1 SEE ALSO
 
