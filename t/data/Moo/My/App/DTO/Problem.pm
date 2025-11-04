@@ -1,7 +1,6 @@
 package My::App::DTO::Problem;
 
 use Moo;
-use MooX::StrictConstructor;
 use MooX::TypeTiny;
 
 use Types::Common::Numeric qw( IntRange );

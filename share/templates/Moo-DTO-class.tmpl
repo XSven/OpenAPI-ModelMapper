@@ -1,7 +1,6 @@
 package {$namespace};
 
-use Moo;
-use MooX::StrictConstructor;
+{ if ( $additionalProperties ) { "use Moo;" } else { "use Moo;\nuse MooX::StrictConstructor;" } }
 use MooX::TypeTiny;
 
 use Types::Common::Numeric qw( IntRange );
