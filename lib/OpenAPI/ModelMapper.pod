@@ -52,6 +52,11 @@ If L<MooX::StrictConstructor> is not used, C<new()> swallows unknown attributes
 (additional properties). If it is the purpose of additional properties to
 get ignored, this behaviour is sufficient.
 
+All the attributes of a DTO class are C<ro> that means we are
+currently ignoring the C<readOnly>, and C<writeOnly> property
+keywords ("Read-Only and Write-Only Properties" section of
+L<https://swagger.io/docs/specification/v3_0/data-models/data-types/>).
+
 =head1 SEE ALSO
 
 =over 2

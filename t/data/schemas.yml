@@ -24,17 +24,17 @@ components:
     Problem:
       type: object
       properties:
-        detail:
+        title:
           type: string
-          maxLength: 1024
+          maxLength: 128
         status:
           type: integer
           format: int32
           minimum: 100
           maximum: 599
-        title:
+        detail:
           type: string
-          maxLength: 128
+          maxLength: 1024
       required:
         - title
     ProblemAI:

@@ -91,11 +91,11 @@ sub generate_class {
   sub _map_to_type_tiny ( $ ) {
     my ( $data ) = @_;
 
-    # FIXME: "allOf" not implemented yet
-    if ( exists $data->{ anyOf } ) {
-      # FIXME: Not properly impelemted. We need a kind of union here
-      # ... so we have a multi-type. Hope that it is just a type or null
-      return _map_to_type_tiny( $data->{ anyOf }->[ 0 ] );
+    # FIXME:
+    # Keywords used to combine schemas are not supported yet
+    # https://swagger.io/docs/specification/v3_0/data-models/oneof-anyof-allof-not/
+    if ( exists $data->{ oneOf } or exists $data->{ allOf } or exists $data->{ anyOf } ) {
+      croak 'OpenAPI keywords used to combine schemas are not supported yet'
     } elsif ( my $type = $data->{ type } ) {    # Access "type" keyword
       if ( $type eq 'array' ) {
         my $subtype = _map_to_type_tiny( $data->{ items } );

@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More import => [ qw( BAIL_OUT isa_ok note ok require_ok ) ], tests => 16;
+use Test::More import => [ qw( BAIL_OUT isa_ok note ok require_ok ) ], tests => 18;
 use Test::Fatal          qw( dies_ok lives_ok );
 use Test::File::Contents qw( files_eq_or_diff );
 use Test::File::ShareDir ();
@@ -39,3 +39,17 @@ for my $name ( qw ( Common DeploymentStatus Problem ) ) {
   my $class = join( '::', $self->prefix, 'DTO', $name );
   ok not( defined $class->can( 'TO_JSON' ) ), "'$class' has no TO_JSON() object method" ## no critic ( RequireTestLabels )
 }
+
+lives_ok {
+  My::App::DTO::Problem->new(
+    type     => 'https://example.com/probs/out-of-credit',
+    title    => 'You do not have enough credit.',
+    status   => 403,
+    detail   => 'Your current balance is 30, but that costs 50.',
+    instance => '/account/12345/transactions/abc'
+  )
+}
+"Swallow unknown attributes ('type', and 'instance')";
+
+dies_ok { My::App::DTO::DeploymentStatus->new( status => 'failed', reason => 'no write permission' ) }
+"Unknown attribute ('reason' instead of 'message')"
