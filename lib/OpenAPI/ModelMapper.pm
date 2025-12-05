@@ -84,7 +84,7 @@ sub generate_class {
     integer => 'Int',
     string  => 'Str'
     #number => 'Num',
-    #boolean => '', # a conflict between JSON::PP::Boolean and Type::Tiny
+    #boolean => '', # a conflict between JSON::PP::Boolean and Type::Tiny (would Types::Bool help?)
     #object  => 'HashRef',
   };
 
@@ -97,6 +97,7 @@ sub generate_class {
     if ( exists $data->{ oneOf } or exists $data->{ allOf } or exists $data->{ anyOf } ) {
       croak 'OpenAPI keywords used to combine schemas are not supported yet'
     } elsif ( my $type = $data->{ type } ) {    # Access "type" keyword
+      return join( ' | ', map { $basic_types_map->{ $_ } } @$type ) if ref $type eq 'ARRAY';
       if ( $type eq 'array' ) {
         my $subtype = _map_to_type_tiny( $data->{ items } );
         return "ArrayRef[ $subtype ]"

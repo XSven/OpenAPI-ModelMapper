@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More import => [ qw( BAIL_OUT explain is note require_ok ) ], tests => 11;
+use Test::More import => [ qw( BAIL_OUT explain is note require_ok ) ], tests => 12;
 
 use File::Spec::Functions qw( catfile );
 
@@ -26,3 +26,5 @@ is $code->( $schemas->{ Environment } ),        'Enum[ qw( dev test prod ) ] | U
 is $code->( $schemas->{ Password } ),           'StrLength[ 8 ]',      'String with min length restriction';
 is $code->( $schemas->{ Initials } ),           'StrLength[ 0, 3 ]',   'String with max length restriction';
 is $code->( $schemas->{ Fullname } ),           'StrLength[ 1, 255 ]', 'String with min and max length restrictions';
+# Int should be replaced by Types::Common::Numeric::PositiveOrZeroInt
+is $code->( $schemas->{ Location } ), 'ArrayRef[ Str | Int ]', 'JSON pointer as array type constaint'
